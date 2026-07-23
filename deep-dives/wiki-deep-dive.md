@@ -175,14 +175,16 @@ fixed on purpose — a dump of links only becomes knowledge if every source gets
 2. **Dedup check** — if the URL already matches an existing source page, update that page instead of
    creating a new one (the registry even catches things I clipped by hand).
 3. **Write a source page** — every ingested source gets its own `wiki/sources/<slug>.md` (it's both the
-   per-source record and the dedup key): summary, key takeaways, and `[[wikilinks]]` out to the durable
-   pages it touches.
+   per-source record and the dedup key): summary, key takeaways, and `[markdown links](page.md)` out to the
+   durable pages it touches. The link form is `[page-name](page-name.md)` — standard markdown, not
+   `[[wikilinks]]`. It renders in every tool (GitHub, VS Code, agents), aligns with Google's Open Knowledge
+   Format, and keeps one link syntax system-wide.
 4. **Create or update durable pages, read-before-write** — patterns, tools, concepts, guides. Always
    read the existing page first and update in place; never blind-overwrite. ("No new durable knowledge"
    is a valid outcome — not everything earns a page.)
 5. **Handle contradictions without overwriting** — if a source disputes an existing claim, I don't
-   silently replace it; I add a `> Disputed by [[source-slug]]: …` note under the claim so both views
-   survive with provenance.
+   silently replace it; I add a `> Disputed by [source-slug](source-slug.md): …` note under the claim so
+   both views survive with provenance.
 6. **Freshness tags** — time-sensitive claims (model versions, prices, benchmarks) get an `as_of: YYYY-MM`
    so a future read knows how stale they are.
 7. **Update recommendations** — if the source strengthens, weakens, qualifies, reopens, or closes a
@@ -211,7 +213,7 @@ fixed on purpose — a dump of links only becomes knowledge if every source gets
   an optional dated trail of *verdict changes* (not every ingest) underneath. This is where reading
   actually turns into knowing what to do.
 - **Lint is a read-only health check, not an auto-fixer.** A periodic scan surfaces orphan pages, dead
-  `[[links]]`, malformed `ingest_status`, off-vocabulary tags, and taxonomy decay (near-duplicate titles,
+  links, malformed `ingest_status`, off-vocabulary tags, and taxonomy decay (near-duplicate titles,
   oversized split-candidates). It *reports*; it never mutates. The model proposes fixes for the judgment
   calls (contradictions, stale claims, two pages that are secretly the same idea under different names),
   and I approve them. Lint catches the mechanical rot; I catch the semantic rot.
@@ -249,7 +251,8 @@ You do not need this whole machine to have a useful second brain. The minimum is
 1. **One capture path** — install the Web Clipper, point it at a `raw/` folder, clip things.
 2. **One ingest pass** — when a few captures pile up, have your model read them and write plain markdown
    summary pages with links, into a flat `wiki/`.
-3. **A `[[wikilinks]]` index** so you and the model can navigate.
+3. **A linked `index.md`** so you and the model can navigate — cross-link pages with standard markdown
+   links: `[page-name](page-name.md)`. (Obsidian configured with `Use [[Wikilinks]]` turned OFF.)
 
 That's a real second brain, and it's an afternoon. Everything above — the function-folder taxonomy, the
 recommendations layer, the PDF scanner's four tiers, the YouTube visual-signal gate, the controlled
@@ -258,3 +261,8 @@ solves. The scanner matters because I run an autonomous researcher against the h
 clipping things by hand, you can skip it until you're not. The recommendations layer matters because I
 have enough sources that summaries stopped being enough. Add each piece when the lack of it starts to
 hurt, not before. Yours should grow to fit what you actually read, not copy mine wholesale.
+
+One late-stage upgrade worth knowing exists: once the wiki reaches a few hundred pages, answering "what
+did we conclude about X" starts costing several turns of index navigation. A small deterministic
+retriever (plain code ranking pages by title, headings, and tags — no embeddings) collapses that to one
+turn. It's described in `optimizations.md` (#5); don't build it before the navigation cost is real.

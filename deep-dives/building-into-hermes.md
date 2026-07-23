@@ -1,7 +1,7 @@
 # Building *into* Hermes, not *on* Hermes
 
-A choice I made that most people don't, and why. This is a sidecar to `build-map.md` Step 7 and the
-`hermes-setup-runbook.md` — read those first for *what* the agent is and *how* to stand it up. This doc is
+A choice I made that most people don't, and why. This is a sidecar to `../build-map.md` Step 7 and the
+`../reference/hermes-setup-runbook.md` — read those first for *what* the agent is and *how* to stand it up. This doc is
 narrower: once you have an always-on agent (mine runs on **Hermes**, [NousResearch's self-hostable agent
 framework](https://github.com/NousResearch/hermes-agent)), *how do you change it over time?* There are two
 honest answers, and the one I picked is the less obvious one.

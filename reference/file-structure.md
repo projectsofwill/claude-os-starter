@@ -18,25 +18,27 @@ my-os/                          # the root repo. Mine is called "claude-os-core"
 ├── README.md                   # a project map. Add it once you have more than one project.
 │
 ├── context/                    # Step 1 — who you are
+│   ├── index.md                #   (OKF) one-line list of this folder's files; read before the files (rule 3)
 │   ├── about-me.md
 │   ├── working-style.md
 │   └── brand-voice.md
 │
 ├── memory/                     # Step 2 — durable facts, one per file, + a one-line index
-│   ├── MEMORY.md               #   the index that loads every session
+│   ├── MEMORY.md               #   the index that loads every session (memory's version of the folder index)
 │   └── <some-fact>.md          #   one fact per file
 │
 ├── ops/                        # operational docs (grows over time)
+│   ├── index.md                #   (OKF) folder index — see rule 3 below
 │   ├── STATUS.md               #   live "where things stand" dashboard
 │   ├── ROADMAP.md              #   committed direction
 │   ├── CHANGES.log             #   session checkpoint log (the discipline layer)
-│   ├── reference/              #   stable lookups (docs like this one)
-│   └── records/                #   executed one-off plans, kept for history
+│   ├── reference/              #   stable lookups (docs like this one) — has its own index.md
+│   └── records/                #   executed one-off plans, kept for history — has its own index.md
 │
 ├── research/                   # Step 5 — the second-brain wiki
-│   ├── index.md                #   the wiki's home page
+│   ├── index.md                #   the wiki's home page (also serves as its OKF folder index)
 │   ├── raw/                    #   immutable captures (never edited; only a status field changes)
-│   └── wiki/                   #   curated, linked pages, organized BY FUNCTION:
+│   └── wiki/                   #   curated, linked pages, organized BY FUNCTION (each subfolder gets its own index.md):
 │       ├── concepts/           #     ideas
 │       ├── patterns/           #     reusable approaches
 │       ├── sources/            #     captured articles/videos as pages
@@ -60,7 +62,7 @@ my-os/                          # the root repo. Mine is called "claude-os-core"
 
 ---
 
-## Two organizing rules that make it work
+## Three organizing rules that make it work
 
 **1. Organize by function, not by topic.** Notice the wiki folders are *kinds of page* (concepts,
 patterns, sources, tools), not subjects (AI, cooking, finance). The subject goes in a `tags:` field
@@ -69,6 +71,37 @@ inside each file. This keeps the tree flat as it grows, instead of spawning a ne
 **2. Signpost files in CAPS, everything else lowercase-with-dashes.** A small fixed set of all-caps names
 (`README`, `CLAUDE`, `ROADMAP`, `STATUS`, `MEMORY`, `CHANGES`) act as landmarks; every other file is
 `lowercase-with-dashes.md`. Boring and consistent beats clever.
+
+**3. Every navigable folder gets an `index.md`.** A short, frontmatter-free file that lists what's in the
+folder, one line per file. Claude reads this cheap index *before* opening the files themselves, so it
+spends fewer tokens and misroutes less often when it's hunting for something. This is the **`index.md`
+navigation pattern** from Google's **Open Knowledge Format** (the same OKF behind the markdown-wiki idea
+in Step 5) — you adopt OKF's per-folder index, not its full spec (OKF also defines per-document
+frontmatter, which this starter skips). Three habits keep the index useful:
+
+- **Read** the folder's `index.md` before drilling into its files.
+- **Create** one whenever you add a folder that holds 2+ files. (Skip it for single-file or pure-cache
+  folders — there's nothing to index.)
+- **Update** it in the *same change* you add, rename, or remove a file. A stale index is worse than none.
+
+The format is plain: no YAML frontmatter, just `#`-heading groups, each followed by a markdown list of
+`* [file-title](file-name.md) - one-sentence description`. Group child folders under a `# Subdirectories`
+heading and link each one to *its own* `index.md` (`* [reference](reference/index.md) - …`) — this is
+exactly what OKF does, so you match the spec here rather than diverge from it. The one place you'll go
+off-spec: a folder you deliberately leave *un-indexed* (a plain code directory, say) has no `index.md` to
+point at, so list it as plain text (`* tools/ - …`) rather than a bare-folder link like
+`[tools](tools/)`. Obsidian only resolves links that point to a note (a `.md` file), not to a folder, so a
+bare-folder link becomes an *unresolved* link: it shows up as a phantom placeholder node in the graph,
+and clicking it makes Obsidian create the note it thinks is missing — an empty junk file dumped in your
+vault root. Plain text has no link to resolve, so none of that happens.
+(If a folder holds scripts you want navigable, list them under a `# Scripts` heading — that's a small
+Claude-OS add-on; OKF itself indexes only markdown files and subfolders.) You don't write these by hand
+every time — once the pattern exists, Claude Code maintains them for you, and the Step 5 lint pass flags
+any that have drifted from their folder's actual contents.
+
+> `MEMORY.md` and `README.md` are this same idea in different clothes: `MEMORY.md` is the index for
+> `memory/`, and a folder's human-prose `README.md` (if it has one) is the narrative companion to its
+> machine-readable `index.md`. They coexist; the `index.md` is the one Claude scans to navigate cheaply.
 
 ---
 

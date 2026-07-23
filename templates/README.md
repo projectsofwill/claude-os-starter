@@ -14,7 +14,7 @@ real scaffold instead of a blank page.
 
 ## How to use them
 
-**The easy way:** don't fill these in by hand. Use **Prompt 1** in `setup-prompts.md` — Claude Code reads
+**The easy way:** don't fill these in by hand. Use **Prompt 1** in the root `README.md` — Claude Code reads
 these templates and fills them in by interviewing you. That's the intended path. The steps below are the
 manual version if you'd rather do it yourself.
 

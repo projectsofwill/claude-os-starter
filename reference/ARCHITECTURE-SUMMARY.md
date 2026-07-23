@@ -1,6 +1,6 @@
 # Memory & Data Architecture (plain-language summary)
 
-A companion to the diagram (`claude-os-architecture.excalidraw`) and to `build-map.md`. It explains
+A companion to the diagram (`claude-os-architecture.excalidraw`, same folder) and to `../build-map.md`. It explains
 *where the data lives*, *how it moves*, and *the naming* so the whole thing stops being confusing. This
 describes my setup; yours would have the same shape with your own content.
 
@@ -25,6 +25,7 @@ handled by an agent I call Alfred) lives on the VPS in a database.
 | **`research/` wiki** | Your laptops | External knowledge (articles, tools, patterns) | Markdown = **source of truth**. Synced Mac to PC via GitHub; VPS pulls a read-only copy. |
 | **`memory/` repo** | Your laptops **only** | Your most-sensitive facts: identity, finances, health *records*, preferences | **Never** goes to any server. The conservative tier. |
 | **`alfred` database** | The **VPS** (private) | Operational self-logs you hand the assistant (a workout, a meal) | Where "I did 10 pushups" lands, logged over Telegram. |
+| **Shared memory bank** | The **VPS** (behind a small token-scoped service) | Episodic memory: what sessions and agents did and decided, shared across desktop Claude Code and the VPS agents | A late-stage add-on (see `../deep-dives/optimizations.md` #7). Best-effort filtered, **not a secrets vault**; personal-data agents use separate isolated banks. |
 
 **A fair question: isn't a workout personal too?** Yes. The line here isn't "personal vs. not" (both stores
 hold personal data). It's **sensitivity plus purpose**. My most sensitive identity data (finances, health
@@ -43,10 +44,10 @@ laptop-only repo if you have facts you don't want on GitHub at all. So read "nev
 "this is the strict option"; the everyday default is "stays in your private repo, never on the server."
 
 Key idea: the **markdown wiki is the knowledge layer**. There is no separate search index or vector
-database. At this scale (a few hundred pages) flat markdown plus Obsidian's `[[wikilinks]]` is enough to
-navigate, and the tools read the files directly. Add a search index only if the wiki grows past roughly a
-thousand pages and flat-file navigation starts to hurt. (See `build-map.md` Step 5 for why a markdown
-wiki beats a vector database until then.)
+database. At this scale (a few hundred pages) flat markdown with standard link syntax
+(`[page-name](page-name.md)`) is enough to navigate, and the tools read the files directly. Add a search
+index only if the wiki grows past roughly a thousand pages and flat-file navigation starts to hurt. (See
+`build-map.md` Step 5 for why a markdown wiki beats a vector database until then.)
 
 ---
 
@@ -72,6 +73,11 @@ These are genuinely separate paths. Mixing them up is most of the confusion.
   structured data in the database on the VPS. (Note: "Alfred" is an *agent*; the database is a separate
   thing it writes to. Different layers, same name by history.)
 - **Claude Code** reads the markdown wiki files directly on your laptop (flat-file search, no index).
+- **Desktop sessions capture into and recall from the shared memory bank** over the same private VPN
+  (allowlisted projects only; sensitive paths and sessions that touched untrusted web content are excluded).
+  Each new session starts with a short briefing of recent cross-agent activity, treated as claims with a
+  source, not as instructions. This is the optional late-stage layer from `../deep-dives/optimizations.md` #7 —
+  skip it until you run more than one agent.
 
 ---
 
@@ -82,6 +88,9 @@ These are genuinely separate paths. Mixing them up is most of the confusion.
   knowledge layer; only a human-initiated ingest adds pages.
 - **The VPS is Tailscale-private**, not on the public internet. The agent's dashboard is treated like SSH.
 - **Cloud API keys live in their own container** on the VPS, never inside the agent itself.
+- **Memory banks are tiered** (if you add the shared-memory layer): the shared bank is separate from the
+  personal-data agents' isolated banks, agents that only need to *read* shared memory get a read-only
+  token, and the bank is never treated as a secrets vault.
 
 ---
 
@@ -93,6 +102,8 @@ The VPS runs **Hermes** (NousResearch's self-hostable agent framework) as a smal
   dashboard (Tailscale-only). Pinned to a specific version, never `:latest`.
 - **searxng** — a self-hosted meta-search engine the researcher uses to find sources.
 - **a key-isolation container** — holds the cloud API keys so the agent never sees them directly.
+- *(late-stage, optional)* **a shared memory service** — the episodic bank from the stores table, behind
+  its own token-scoped door.
 
 Several agent **profiles**, each narrow. The three from the build map: an **orchestrator** (Telegram +
 scheduling + dispatch), a **researcher** (reads the web, locked-down, captures inert files for human

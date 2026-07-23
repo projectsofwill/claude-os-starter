@@ -45,13 +45,13 @@ You do not have to do all seven. Three useful stopping points:
 
 This file stays at the level of *patterns* so it doesn't go stale. The companion files turn it into action:
 
-- **`setup-prompts.md`** — copy-paste prompts that drive your own Claude Code through each step below. The intended way to *build* this: read a step here, then paste its matching prompt. There's one per step.
-- **`tools-and-services.md`** — the concrete answer to "what service do I use for this, and what does it cost."
-- **`file-structure.md`** — a folder layout you can copy.
+- **The setup prompts in `README.md`** — copy-paste prompts that drive your own Claude Code through each step below. The intended way to *build* this: read a step here, then paste its matching prompt. There's one per step.
+- **`reference/tools-and-services.md`** — the concrete answer to "what service do I use for this, and what does it cost."
+- **`reference/file-structure.md`** — a folder layout you can copy.
 - **`templates/`** — fill-in-the-blank starting points for the Step 1 and Step 2 files.
-- **Optional deep-dives and extras** (all indexed in `START-HERE.md`): `wiki-deep-dive.md` and `researcher-deep-dive.md` (the rabbit holes under Step 5 and Step 7), `building-into-hermes.md` (why I build the agent from my desk, not on the box), `optimizations.md` (speed and cost add-ons once it's running), and `additional-resources.md` (who I follow and what my researcher crawls).
+- **Optional deep-dives and extras** (all in `deep-dives/`): `wiki-deep-dive.md` and `researcher-deep-dive.md` (the rabbit holes under Step 5 and Step 7), `building-into-hermes.md` (why I build the agent from my desk, not on the box), `optimizations.md` (speed and cost add-ons once it's running), and `additional-resources.md` (who I follow and what my researcher crawls).
 
-So the loop for each step is: read the step here for the *why*, grab the service from `tools-and-services.md`, and paste the step's prompt from `setup-prompts.md` to have Claude Code build it with you.
+So the loop for each step is: read the step here for the *why*, grab the service from `reference/tools-and-services.md`, and paste the step's prompt from `README.md` to have Claude Code build it with you.
 
 ---
 
@@ -123,16 +123,16 @@ So the loop for each step is: read the step here for the *why*, grab the service
 
 ## Step 5 — Knowledge: the second brain (C: Context)
 
-**What it is.** A plain-markdown knowledge wiki (mine lives in `research/`), built as a pipeline: capture raw sources, then ingest them into durable, linked pages. An Obsidian vault sits on top for navigation and `[[wikilinks]]`. Capture is one path (the Obsidian Web Clipper, which also pulls YouTube transcripts); ingestion is a deliberate, step-by-step process the model runs.
+**What it is.** A plain-markdown knowledge wiki (mine lives in `research/`), built as a pipeline: capture raw sources, then ingest them into durable, linked pages. An Obsidian vault sits on top for navigation. Pages link to each other with standard markdown: `[page-name](page-name.md)` — Obsidian configured with `Use [[Wikilinks]]` turned OFF so the links render in every tool (GitHub, VS Code, agents). Capture is one path (the Obsidian Web Clipper, which also pulls YouTube transcripts); ingestion is a deliberate, step-by-step process the model runs.
 
 **What it buys you.** A growing, interlinked knowledge base that both you and your future agents can read. It is the difference between "I read something useful once" and "my system knows it."
 
 **The practice.** This step carries the most researched-and-applied practices:
 
-- **A markdown wiki, not a vector database.** Build a persistent plain-text wiki with an index and `[[wikilinks]]`. Skip embeddings until scale forces it (friction shows up somewhere in the hundreds-to-low-thousands of pages, when flat-file navigation starts to hurt). (Karpathy's "build the LLM wiki"; later formalized by Google's Open Knowledge Format.)
+- **A markdown wiki, not a vector database.** Build a persistent plain-text wiki with an index and standard markdown links (`[page-name](page-name.md)`). Skip embeddings until scale forces it (friction shows up somewhere in the hundreds-to-low-thousands of pages, when flat-file navigation starts to hurt). (Karpathy's "build the LLM wiki"; later formalized by Google's Open Knowledge Format — OKF alignment is one of the three reasons to prefer standard markdown links over Obsidian's `[[wikilinks]]`: it renders in every tool, aligns with the OKF spec, and keeps one link syntax system-wide.)
 - **Organize by function, not by topic.** Folders for *kinds* of page (sources, concepts, patterns, guides). Topic lives in a `tags:` field, not in the folder tree. This keeps the structure flat as it grows.
 - **Lean into the fact that LLMs do not get bored.** Humans abandon wikis because cross-linking and upkeep is tedious. The model maintains references far more reliably than a person will, so a periodic lint-and-review pass keeps the cross-linking healthy instead of letting it rot. It reduces the upkeep that kills human wikis; it does not make upkeep zero (models still miss or invent links, which is exactly what the lint step catches).
-- **Linting is a first-class step, not a nicety.** A periodic health check (orphan pages, dead links, contradictions, stale claims, off-vocabulary tags) prevents rot. It proposes fixes; a human approves them.
+- **Linting is a first-class step, not a nicety.** A periodic health check (orphan pages, dead links, contradictions, stale claims, off-vocabulary tags, and folder `index.md` files that have drifted from their contents) prevents rot. It proposes fixes; a human approves them.
 - **Raw captures are immutable.** A captured source never changes except for a status field. All curation and versioning happens in the wiki pages, never in the raw capture.
 - **Ingestion is where curation happens.** Raw sources are never queried directly. A fixed sequence (validate, dedupe, write the source page, update durable pages, resolve contradictions, tag freshness, update the index, log it) turns a dump of links into actual knowledge.
 - **Separate reference from decisions.** A *guide* is reference. A *recommendation* is a verdict with a rationale (and a review date). Keep them in different places so you can trust each.
@@ -141,7 +141,7 @@ So the loop for each step is: read the step here for the *why*, grab the service
 
 **Yours to fill.** Skeleton: the entire pipeline (capture, immutable raw, ingest steps, lint, function-folders, controlled vocab, safety gate). Filling: your domains and the actual notes. Mine span AI, plus travel and food, which is the point: the machine is domain-agnostic.
 
-> **Going deeper:** `wiki-deep-dive.md` walks through the actual capture-to-ingest workflow and its decisions (the Web Clipper default, the PDF scanner, the YouTube frame-analysis gate, the `/ingest` skill). The autonomous arm that fills the wiki from the web is its own rabbit hole in `researcher-deep-dive.md`.
+> **Going deeper:** `deep-dives/wiki-deep-dive.md` walks through the actual capture-to-ingest workflow and its decisions (the Web Clipper default, the PDF scanner, the YouTube frame-analysis gate, the `/ingest` skill). The autonomous arm that fills the wiki from the web is its own rabbit hole in `deep-dives/researcher-deep-dive.md`.
 
 ---
 
@@ -218,7 +218,7 @@ Step 7 is the only step where I run a named third-party framework, so here is th
 
 **Yours to fill.** The architecture, the profile split, and the security posture copy directly. What the agent researches, whose calendar it reads, and what your brief says are yours.
 
-> **Going deeper:** `hermes-setup-runbook.md` is the phased, concrete setup checklist. `building-into-hermes.md` explains why I build the agent from my desk (a git blueprint deployed to the box) instead of editing it live, with the pros and cons. The researcher is its own rabbit hole in `researcher-deep-dive.md`.
+> **Going deeper:** `reference/hermes-setup-runbook.md` is the phased, concrete setup checklist. `deep-dives/building-into-hermes.md` explains why I build the agent from my desk (a git blueprint deployed to the box) instead of editing it live, with the pros and cons. The researcher is its own rabbit hole in `deep-dives/researcher-deep-dive.md`.
 
 ---
 
@@ -231,6 +231,7 @@ These are not steps. They run across all seven and are most of what keeps the sy
 - **A second model checks the first.** Before I execute anything non-trivial, a different model (I use Codex) stress-tests the plan. Feedback loops are the cheapest 2-to-3x on quality you can buy. The rule that matters: **never let a loop verify its own work.**
 - **Tools do the work, docs say how, the agent orchestrates.** Deterministic scripts for anything that should be reliable; markdown for the how-to; the agent wires them together. Look for an existing tool before writing a new one.
 - **Naming and structure conventions.** A small fixed set of signpost files in caps (`README`, `CLAUDE`, `ROADMAP`, `STATUS`, `MEMORY`), everything else lowercase-with-dashes. Boring and consistent beats clever.
+- **An `index.md` in every folder (OKF navigation).** Each folder that holds more than one file carries a short, frontmatter-free `index.md` listing its contents, so the model reads cheap folder metadata *before* opening files (fewer tokens, fewer misroutes). The discipline is the same shape as doc coherence: read it first, create one with every new folder, and update it in the same pass you add or rename a file. This is the `index.md` navigation pattern from Google's Open Knowledge Format (the same OKF behind the markdown wiki in Step 5) — the per-folder index, not OKF's full per-document spec; the lint pass flags indexes that have drifted. `reference/file-structure.md` has the exact format (including the Obsidian-safe way to link subfolders).
 
 ---
 
@@ -242,7 +243,7 @@ The whole build rests on a handful of load-bearing ideas, all of them already in
 |---|---|---|
 | The Four C's | Context, Connections, Capabilities, Cadence, built in that priority | Nate Herk (AIOS) |
 | Context engineering | Fill the context window with just the right info; keep the always-on file lean | Andrej Karpathy |
-| Knowledge as a markdown wiki | Plain-text wiki with wikilinks, not a vector DB, until scale forces it | Karpathy; Google Open Knowledge Format |
+| Knowledge as a markdown wiki | Plain-text wiki with markdown links, not a vector DB, until scale forces it | Karpathy; Google Open Knowledge Format |
 | Four types of memory | Working, semantic, procedural, episodic | CoALA |
 | File over app | Keep identity and knowledge portable as plain files | Nick Milo |
 | Session continuity | A start/end handoff loop kills cold-start | Project-brain pattern |

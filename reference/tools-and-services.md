@@ -53,8 +53,10 @@ Cost: $0 beyond your Claude plan.
 
 ## Step 5 — The second brain (wiki)
 
-- **[Obsidian](https://obsidian.md)** — the lens over the markdown wiki and where `[[wikilinks]]` come
-  alive. Free for personal use.
+- **[Obsidian](https://obsidian.md)** — the lens over the markdown wiki. Free for personal use. Configure
+  it with **`Use [[Wikilinks]]` turned OFF** (`Settings → Files & Links → Use [[Wikilinks]]`): this makes
+  Obsidian write standard markdown links (`[page-name](page-name.md)`) instead of its own syntax, so your
+  links render in every tool — GitHub, VS Code, agents — without Obsidian installed.
 - **[Obsidian Web Clipper](https://github.com/obsidianmd/obsidian-clipper)** — the official browser
   extension I use to capture articles into the vault. Free. It also pulls **YouTube transcripts** when you
   clip a video.
@@ -66,7 +68,7 @@ syncs the vault on desktop). I do pay for it because it pairs with the Obsidian 
 clipper works well with mobile Safari for capturing on my phone. Optional.
 
 The full capture-to-ingest workflow and its decisions (PDF handling, the YouTube frame-analysis gate, the
-`/ingest` skill) are in `wiki-deep-dive.md`.
+`/ingest` skill) are in `../deep-dives/wiki-deep-dive.md`.
 
 ---
 
@@ -113,13 +115,11 @@ This is the only tier with real recurring cost and setup. Full sequence is in `h
 
 **Models (the agent's brains)**
 
-- **GPT-5.5 via [OpenAI Codex](https://github.com/openai/codex)** (ChatGPT Plus OAuth) — my primary across
+- **GPT-5.6 via [OpenAI Codex](https://github.com/openai/codex)** (ChatGPT Plus OAuth) — my primary across
   the profiles: the orchestrator and the newsletter synthesis. At the time of writing this runs under my
   existing ChatGPT Plus subscription with no extra per-token cost (these OAuth arrangements change, so
   check the current terms before you count on it).
 - **[Claude](https://claude.com)** (Anthropic) — the quality model for the morning brief, where it matters most.
-- **GLM-4.7 via [Z.ai](https://z.ai)** — a cheap pay-as-you-go fallback so one provider's quota limit can't
-  dark the whole stack. *(Optional; only matters once you depend on the agent daily.)*
 
 **News sources for the researcher** *(all optional, add the ones you care about)*
 
@@ -133,7 +133,7 @@ This is the only tier with real recurring cost and setup. Full sequence is in `h
 
 *How those sources actually get fetched* (the three-tier residential-relay → direct → Firecrawl escalation,
 and why a [Firecrawl](https://github.com/mendableai/firecrawl) rescue tier exists) is in
-`researcher-deep-dive.md`.
+`../deep-dives/researcher-deep-dive.md`.
 
 **Secrets & connections** *(new to handling keys safely? read `secrets-101.md` first — it's two rules and a one-line check.)*
 
@@ -153,7 +153,7 @@ tiers or subscriptions you may already have). Set a hard spend alert from day on
 
 ## The discipline layer (throughout)
 
-- **[Codex](https://github.com/openai/codex)** (OpenAI's CLI, running GPT-5.5 on a ChatGPT Plus plan) — my
+- **[Codex](https://github.com/openai/codex)** (OpenAI's CLI, running GPT-5.6 on a ChatGPT Plus plan) — my
   **second-model review gate**. Before I run anything risky, a *different* model family stress-tests it.
   Using a different vendor than Claude is deliberate: independent error modes, so it catches what Claude's
   own review would miss.
@@ -163,8 +163,8 @@ tiers or subscriptions you may already have). Set a hard spend alert from day on
 
 Cost: covered by a ChatGPT Plus subscription (~$20/month) if you use Codex.
 
-See `optimizations.md` for the quality-of-life and cost optimizations I layer on top (Wispr Flow, Headroom,
-model routing).
+See `../deep-dives/optimizations.md` for the quality-of-life and cost optimizations I layer on top (Wispr
+Flow, model routing, the review gate, shared agent memory).
 
 ---
 

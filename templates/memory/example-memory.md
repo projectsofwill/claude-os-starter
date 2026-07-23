@@ -13,7 +13,8 @@ This file is an example of a single memory. The rules that make the pattern work
   this file is relevant, so write it as a clear one-line summary.
 - **`type`** is one of: `user` (who you are), `feedback` (how you want Claude to work, with the why),
   `project` (ongoing work not obvious from the files), `reference` (pointers to external resources).
-- **Link related memories** with `[[their-name]]`, using the other file's `name:` slug.
+- **Link related memories** with `[their-name](their-name.md)`, using the other file's `name:` slug as
+  both the link text and the target filename. Standard markdown — renders in every tool, not just Obsidian.
 - **Live, moving status does NOT go here.** That belongs in a project's `STATUS.md`. Memory is for what
   stays true; STATUS is for "where things stand right now." Keeping them separate is what stops this
   index from bloating and going stale.

@@ -6,7 +6,7 @@ for every choice is in the build map, so read that first.
 
 **You do not run these commands from memory.** This is a checklist of *what* happens in *what order*. The
 actual terminal commands, the Docker config, the SSH setup — Claude Code walks you through each one when
-you use **Prompt 7** in `setup-prompts.md`. Read this to understand the shape and the safety rules; let
+you use **Prompt 7** in the root `README.md`. Read this to understand the shape and the safety rules; let
 Claude Code do the typing. This is the one tier where leaning on it for the literal commands is expected,
 not a failure.
 
@@ -83,8 +83,8 @@ Goal: the agent pulls in sources on a schedule without you asking.
 its own.
 
 > The researcher is the deepest rabbit hole in the whole setup (three-tier fetching, a dual-LLM firewall,
-> human-gated ingest). The full architecture and the services behind it are in `researcher-deep-dive.md`.
-> And before you build any of this, `building-into-hermes.md` covers *how* to build and change the agent
+> human-gated ingest). The full architecture and the services behind it are in `../deep-dives/researcher-deep-dive.md`.
+> And before you build any of this, `../deep-dives/building-into-hermes.md` covers *how* to build and change the agent
 > safely (from a git blueprint, not by editing the live box).
 
 ---
@@ -121,4 +121,13 @@ have. Budget roughly **$10 to $30 a month** and set a hard spend alert from day 
 - A local LLM on the VPS (no GPU; free cloud tiers cover the light profiles).
 - A self-hosted git server, a secrets-manager service, an app/web stack — none of this is the second brain.
 - A separate search-index / vector database for the wiki, until you're past ~1,000 pages.
+- A shared cross-agent memory service — until several agents genuinely need the same facts. It's the last
+  optimization on the list for a reason (`../deep-dives/optimizations.md` #7).
+- A backup/fallback model provider "just in case." A half-tested fallback path is its own failure mode;
+  one primary plus a hard spend alert is the right start.
 - Any profile you don't have a concrete daily use for. Start with one, earn the next.
+
+One trap worth knowing *before* you grow: **a second Telegram bot gets its own gateway process.** If you
+ever add a second bot (a separate assistant with its own token), run it as its own supervised gateway —
+don't multiplex two bots through one. Two pollers on one token, or two bots in one process, fail in
+confusing ways (messages silently stolen by the wrong poller).

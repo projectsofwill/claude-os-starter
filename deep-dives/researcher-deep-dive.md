@@ -7,7 +7,7 @@ because it reads the open, hostile web. So it carries the most safety machinery.
 
 Most people should not build this, or should build only the smallest slice of it. Read this if you've
 decided you want the full thing and want to see how mine actually works. The phased runbook
-(`hermes-setup-runbook.md`, Phase 3) is the "just enough" version; this is the rabbit hole.
+(`../reference/hermes-setup-runbook.md`, Phase 3) is the "just enough" version; this is the rabbit hole.
 
 ---
 
