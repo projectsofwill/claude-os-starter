@@ -1,0 +1,5 @@
+{
+  "name": "diff-fold",
+  "version": "0.1.10",
+  "description": "Folds every Edit/Write/NotebookEdit diff, files a Bash command edits, and Bash/PowerShell output over 2 lines (keeping its last line), to one transcript line."
+}

@@ -1,0 +1,6 @@
+---
+name: grilling
+description: Interview user relentlessly about a plan or design. Use when user wants to stress-test a plan before building, or uses any 'grill' trigger phrases.
+---
+
+Interview me relentlessly about every aspect of the plan until we reach a shared understanding. Walk down the branch of the design tree, resolving dependencies and decisions one-by-one. For each question, provide a recommended answer. Ask in **rounds**, not one question at a time: within a round, ask everything currently unblocked — questions whose answers don't depend on each other — together; wait for the round's answers, then open the next round with whatever those answers just unblocked. Never bundle two questions where one's answer would change the other — that pair stays strictly sequential, each its own round. Bundling *independent* questions isn't the bewildering case; bundling *dependent* ones is. If a question can be answered by exploring the codebase, explore it instead — facts are looked up, decisions are put to me. When the branch is resolved, restate the shared understanding and get my explicit confirmation before acting on the plan; grilling ends in a confirmation, never directly in execution.

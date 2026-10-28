@@ -1,0 +1,16 @@
+{
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": null
+  },
+  "claudeCode.hideOnboarding": true,
+  "claudeLauncher.autoLaunch": true,
+  "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.hideOnStartup": "whenEmpty",
+  "files.exclude": {
+    ".obsidian": true
+  }
+}

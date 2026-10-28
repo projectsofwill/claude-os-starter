@@ -1,0 +1,48 @@
+{
+  "name": "claude-launcher",
+  "displayName": "Claude Launcher (work brain)",
+  "description": "On workspace open, launches Claude Code in terminal mode: resumes the last session if it was active < 1h ago, else starts fresh. Adds a Belki Tasks section (overdue, due this week, waiting-on to chase) to the Claude Code sidebar.",
+  "version": "0.1.0",
+  "publisher": "work-kit",
+  "license": "UNLICENSED",
+  "engines": { "vscode": "^1.90.0" },
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "extensionDependencies": ["anthropic.claude-code"],
+  "contributes": {
+    "views": {
+      "claude-sidebar": [
+        { "id": "claudeLauncher.tasks", "name": "Tasks (Belki)", "when": "claude-code:doesNotSupportSecondarySidebar" }
+      ],
+      "claude-sidebar-secondary": [
+        { "id": "claudeLauncher.tasksSecondary", "name": "Tasks (Belki)", "when": "!claude-code:doesNotSupportSecondarySidebar" }
+      ],
+      "claude-sessions-sidebar": [
+        { "id": "claudeLauncher.tasksSessions", "name": "Tasks (Belki)", "when": "claude-vscode.sessionsListEnabled" }
+      ]
+    },
+    "commands": [
+      { "command": "claudeLauncher.refreshTasks", "title": "Refresh Tasks", "icon": "$(refresh)" }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "claudeLauncher.refreshTasks", "when": "view =~ /^claudeLauncher\\.tasks/", "group": "navigation" }
+      ]
+    },
+    "configuration": {
+      "title": "Claude Launcher",
+      "properties": {
+        "claudeLauncher.autoLaunch": {
+          "type": "boolean",
+          "default": false,
+          "description": "Launch Claude Code in the terminal when this workspace opens."
+        },
+        "claudeLauncher.resumeWithinMinutes": {
+          "type": "number",
+          "default": 60,
+          "description": "Resume the last session if it was active within this many minutes; otherwise start fresh (cold prompt cache)."
+        }
+      }
+    }
+  }
+}

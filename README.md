@@ -14,6 +14,8 @@ The build is seven steps across four layers (Context, Connections, Capabilities,
 
 There is no prize for reaching Step 7. Stop wherever the value stops being worth the upkeep.
 
+**Using it for a job?** [work-kit/](work-kit/README.md) is a separate, copy-ready version for a RevOps role: a private work repo with a metric glossary, meeting-transcript ingest, task tracking, and token-budget profiles. It's the one part of this repo that ships real files (skills and hooks) instead of prompts.
+
 ## How this actually works (read this first)
 
 This matters, because it's not obvious from a repo of markdown files:

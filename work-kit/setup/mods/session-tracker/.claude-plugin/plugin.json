@@ -1,0 +1,6 @@
+{
+  "name": "session-tracker",
+  "version": "0.1.0",
+  "description": "Shows the other Claude Code sessions working in this repo above the prompt: working or waiting, their latest task, how long ago. /sessions lists them all.",
+  "types": "./types/index.d.ts"
+}

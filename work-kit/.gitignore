@@ -1,0 +1,11 @@
+.env
+.env.*
+meetings/raw/*
+!meetings/raw/.gitkeep
+!meetings/raw/_example-transcript.md
+*.local.json
+__pycache__/
+.DS_Store
+
+.obsidian/workspace*.json
+.obsidian/cache
