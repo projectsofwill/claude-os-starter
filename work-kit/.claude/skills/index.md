@@ -6,6 +6,7 @@
 
 # RevOps work
 
+* [prep](prep/SKILL.md) - Read-only brief before a meeting or 1:1: card, history, owed both ways, open questions.
 * [meeting-ingest](meeting-ingest/SKILL.md) - Transcripts to notes, tasks, people updates; Haiku extracts long ones.
 * [prompt-enhancer](prompt-enhancer/SKILL.md) - Pin ambiguous RevOps terms and turn a rough ask into a spec.
 * [domain-modeling](domain-modeling/SKILL.md) - Build and sharpen the glossary (CONTEXT.md) and decision records.

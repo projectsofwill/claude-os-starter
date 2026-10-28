@@ -1,7 +1,0 @@
-{
-  "name": "reflect",
-  "version": "0.1.0",
-  "description": "Corrections you type become feedback memories: a Haiku check on each short prompt finds reusable rules; a band above the prompt saves one to the workspace memory folder (feedback-*.md + MEMORY.md line) on one press. Port of claude-reflect's mod (BayramAnnakov/claude-reflect b6c4232, MIT).",
-  "types": "./types/index.d.ts",
-  "license": "MIT"
-}

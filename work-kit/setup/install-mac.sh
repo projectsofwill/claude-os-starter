@@ -124,7 +124,7 @@ if [ -d "$VSUSER/profiles" ] && [ -n "$(ls -A "$VSUSER/profiles" 2>/dev/null)" ]
 fi
 
 # ---- 6. one memory store: Claude Code's auto-memory dir for this repo -> the repo's memory/
-# (the harness and the reflect mod write to ~/.claude/projects/<path slug>/memory; the router reads memory/)
+# (the harness writes to ~/.claude/projects/<path slug>/memory; the router reads memory/)
 SLUG="$(printf '%s' "$BRAIN" | sed 's/[^a-zA-Z0-9]/-/g')"
 AUTOMEM="$HOME/.claude/projects/$SLUG/memory"
 if [ -L "$AUTOMEM" ]; then

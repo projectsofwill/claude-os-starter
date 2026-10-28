@@ -31,7 +31,14 @@ Then:
 2. Install Obsidian, open `~/work-brain` as a vault, install the **belki** community plugin.
 3. Paste your personal `working-style.md` and `brand-voice.md` into `context/` (email them to yourself;
    they're preferences, not confidential).
-4. Open `~/work-brain` in VS Code. Claude auto-launches; paste the prompt below.
+4. If the policy allows it, add Anthropic's document skills (Excel, PowerPoint, Word, PDF) for QBR decks
+   and models:
+
+   ```bash
+   claude plugin marketplace add anthropics/skills
+   claude plugin install document-skills@anthropic-agent-skills
+   ```
+5. Open `~/work-brain` in VS Code. Claude auto-launches; paste the prompt below.
 
 <details>
 <summary><b>Day-1 prompt</b></summary>
@@ -58,11 +65,12 @@ confirming before each write:
 
 ```mermaid
 flowchart LR
-  A[claude starts: auto-catchup] --> B[work]
+  A[claude starts: auto-catchup] --> P[/prep before meetings/]
+  P --> B[work]
   B --> C[/meeting-ingest today/]
   C --> D[Belki tasks + people + notes]
   D --> E[/wrap-up/]
 ```
 
-Skills: `/catchup`, `/wrap-up`, `/todo` (incl. `sweep`), `/meeting-ingest`, `/prompt-enhancer`,
+Skills: `/catchup`, `/wrap-up`, `/todo` (incl. `sweep`), `/prep`, `/meeting-ingest`, `/prompt-enhancer`,
 `/grilling`, `/domain-modeling`, `/usage-cost`, `/writing-great-skills`. Deferred ideas: `BACKLOG.md`.

@@ -12,7 +12,9 @@ working memory for that job. It is a router: read the file that fits the task, d
 - `context/brand-voice.md`: **read before drafting anything sent under my name** (email, Slack, docs).
 - `CONTEXT.md`: the glossary (metric definitions, stage names, fields, each with a source of truth).
   Use its terms exactly. If a request uses an undefined term, pin it (`/prompt-enhancer`) before querying anything.
-- `revops/stack-map.md`: GTM systems, objects, automations, integrations, owners.
+- `revops/`: `stack-map.md` (GTM systems, objects, automations, owners), `queries.md` (saved queries: what
+  each answers and what it ties to), `changelog.md` (every production change, gated or not).
+- `analysis/`: one folder per data question (query + notes with the tie-out). Raw exports are gitignored.
 - `STATUS.md`: dashboard, one line per workstream. Each workstream's handoff is `projects/<name>/STATUS.md`.
   A workstream is **recurring** (forecast, QBR prep: STATUS + a `## Runbook` improved each cycle) or a
   **project** (an integration, a quota plan: STATUS with a target date). Open a folder only for work that
@@ -48,6 +50,8 @@ working memory for that job. It is a router: read the file that fits the task, d
 
 - **Numbers and facts carry a source.** Every metric, date, owner, or config claim names where it came from
   (a file here, a CRM report, a meeting note). Not checked → say "unverified". Never state a number from memory.
+- **Numbers tie out.** Before a number leaves this repo, reconcile it to an independent total in the source
+  system and record both (`analysis/README.md`). No tie-out: label it "unreconciled".
 - **Terms come from `CONTEXT.md`.** A term that isn't defined there, or still says `<confirm>`, gets pinned
   with me before it drives a query or a number.
 - **Quotes vs reasoning.** Text an AI quotes from a file or a command's output is evidence. An AI's
@@ -66,6 +70,7 @@ comp/quota/forecast numbers going to leadership, or anything customer-facing**:
 3. Critique: a different-model reviewer if the company provides one, otherwise an Opus subagent with the
    literal change + intent. Incorporate material findings.
 4. Get my explicit go.
+5. For a system or data change, after it runs: add the entry to `revops/changelog.md` (why, scope, backup, rollback, verified).
 
 ## Models and delegation
 

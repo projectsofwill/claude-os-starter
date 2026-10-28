@@ -6,18 +6,6 @@
   },
   "plugins": [
     {
-      "name": "review-watch",
-      "description": "Live line per running review (hamzafer/claude-code-mods, vetted 2026-10-07)",
-      "version": "0.1.0",
-      "source": "./review-watch"
-    },
-    {
-      "name": "next-steps",
-      "description": "2-3 likely next prompts above the prompt, via a Haiku call per turn (hamzafer/claude-code-mods 5657c52, vetted + Codex-gated 2026-10-07); local: band lines wrap, no cut-off; answer-the-question first line; skipped when the reply ends in a numbered list",
-      "version": "0.1.3",
-      "source": "./next-steps"
-    },
-    {
       "name": "agent-radar",
       "description": "Live line per running subagent above the prompt; /radar pane (hamzafer/claude-code-mods 5657c52, vetted 2026-10-07)",
       "version": "0.1.2",
@@ -30,12 +18,6 @@
       "source": "./belki-band"
     },
     {
-      "name": "md-preview",
-      "description": "Rendered pane of the Markdown files Claude edits, before/after; /md (hamzafer/claude-code-mods 5657c52, vetted 2026-10-08; local patch: GitHub API rendering disabled, 4 gh-path tests fail by design)",
-      "version": "0.1.3",
-      "source": "./md-preview"
-    },
-    {
       "name": "diff-fold",
       "description": "Folds every Edit/Write/NotebookEdit diff, files a Bash command edits, and Bash/PowerShell output over 2 lines (keeping its last line), to one transcript line (own build, 2026-10-08)",
       "version": "0.1.10",
@@ -46,18 +28,6 @@
       "description": "Themed reply rendering (NahumLitvin/prismantis 0.12.0, auto-update dropped 2026-10-08); local patches: tool rows in a fixed grey via `toolColor` (default #444c56), inline code gets a background",
       "version": "0.12.0-local.1",
       "source": "./prismantis"
-    },
-    {
-      "name": "session-tracker",
-      "description": "Other Claude Code sessions in this repo above the prompt (working/waiting, latest task, age); /sessions (own build 2026-10-12)",
-      "version": "0.1.0",
-      "source": "./session-tracker"
-    },
-    {
-      "name": "reflect",
-      "description": "Corrections become feedback memories: Haiku check per short prompt, band offers Save to memory (feedback-*.md + MEMORY.md line via noclobber create + append). Port of BayramAnnakov/claude-reflect b6c4232, Codex-gated 2026-10-12",
-      "version": "0.1.0",
-      "source": "./reflect"
     }
   ]
 }

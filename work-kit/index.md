@@ -10,7 +10,8 @@
 # Subdirectories
 
 * [context](context/index.md) - Who I am at work, working style, brand voice.
-* [revops](revops/stack-map.md) - GTM stack map (systems, CRM objects, automations, owners).
+* [revops](revops/index.md) - GTM stack map, saved queries, production change log.
+* [analysis](analysis/README.md) - One folder per data question; tie-out rule; exports gitignored.
 * [meetings](meetings/README.md) - Processed meeting notes; raw/ holds gitignored transcripts.
 * [people](people/_template.md) - Stakeholder cards (template).
 * [projects](projects/_template/STATUS.md) - One folder per workstream, each with its own STATUS.md.

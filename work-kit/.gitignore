@@ -3,6 +3,12 @@
 meetings/raw/*
 !meetings/raw/.gitkeep
 !meetings/raw/_example-transcript.md
+# Data exports hold customer data and the source system is the truth: keep the query, not the dump
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet
 *.local.json
 __pycache__/
 .DS_Store
