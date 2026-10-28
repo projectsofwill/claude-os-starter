@@ -8,7 +8,9 @@ description: Turn meeting recordings/transcripts into structured notes, tasks, a
 **Rules first:**
 - **Never read a long transcript in the main loop.** Over the size threshold (step 2), a Haiku subagent
   extracts and the main loop reads only its extract. This is the skill's main cost control.
-- **Glossary changes are proposals.** New terms are listed for approval; `CONTEXT.md` is edited only on the user's OK.
+- **Shared references are proposals.** New terms, changed definitions (`CONTEXT.md`) and system facts
+  (`revops/stack-map.md`) are listed for approval and edited only on the user's OK. A project's `## Next` is
+  flagged, never rewritten.
 - **People-card rule:** write every card as if the person will read it (role, priorities, asks, decisions).
   No judgments or gossip. If a meeting is HR-sensitive (performance, comp of a named person, personal matters),
   skip people-card updates for it and say so.
@@ -42,6 +44,8 @@ description: Turn meeting recordings/transcripts into structured notes, tasks, a
    `summary` (3-5 bullets), `decisions` (each with who decided), `my_actions` (task, due if stated),
    `others_commitments` (who, what, due if stated), `metrics` (figure + what it measures + period),
    `open_questions`, `new_terms` (terms used that aren't in CONTEXT.md, with how they were used),
+   `definition_changes` (a decision that changes how a CONTEXT.md term is defined or calculated),
+   `system_facts` (a GTM system, object, field, automation, integration or owner stated in the meeting),
    `project` (best match among `projects/*/`, or none).
 
 3. **Write the note** `meetings/YYYY-MM-DD-<slug>.md`:
@@ -76,13 +80,19 @@ description: Turn meeting recordings/transcripts into structured notes, tasks, a
    the card from `people/_template.md` if missing, then update `last touch`, append to `cares about` /
    `open asks` only when the meeting showed something new. One line per change.
 
-6. **Projects.** If `project` matched, append each decision to that `projects/<name>/STATUS.md`
-   `## Decisions`, dated, with a link to the note.
+6. **Projects.** If `project` matched, in that `projects/<name>/STATUS.md`:
+   - append each decision to `## Decisions`, dated, with a link to the note;
+   - append each open question to `## Open questions`, with a link to the note (skip one already listed);
+   - if a decision or commitment changes what's next, don't edit `## Next`: flag it in the report.
 
-7. **Report** (short): meetings processed, notes written, tasks added (Mine / Waiting on), people updated.
-   Then **glossary candidates** as a list (`term: how it was used`) with the question "Add any to
-   CONTEXT.md?" On a yes, add them in CONTEXT.md's format with `<definition to confirm>` where
-   the meeting didn't define the term.
+7. **Report** (short): meetings processed, notes written, tasks added (Mine / Waiting on), people updated,
+   STATUS lines added. Then the proposals, each a list with one question:
+   - **Glossary candidates** (`term: how it was used`): "Add any to CONTEXT.md?" On a yes, add them in
+     CONTEXT.md's format with `<definition to confirm>` where the meeting didn't define the term.
+   - **Definition changes** (`term: current definition -> what was decided`, with the note link):
+     "Update CONTEXT.md?"
+   - **Stack-map updates** (`system: fact`, with the note link): "Update revops/stack-map.md?"
+   - **Next may change** (`project: why`): "Update ## Next?"
 
 ## Budget note
 
