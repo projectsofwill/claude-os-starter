@@ -20,7 +20,9 @@ Notes:
     the monthly fee regardless of token volume; this number is what the same usage
     would have been billed if metered per token.
   - Rates below are per-token, from the model pricing reference. Update RATES if
-    pricing changes. Cache read = 0.1x input; cache write = 1.25x (5m) / 2x (1h).
+    pricing changes. Cache write = 1.25x (5m) / 2x (1h) input; cache read = 0.1x input,
+    except Opus 5.5 (0.05x) and Fable 5.1 / Mythos 5.1 (0.025x). Haiku 5.5 is priced at
+    its <=100K-token-prompt rate (5x beyond that is not modeled).
   - --by-session is exact: cost is bucketed per sessionId, each token counted once.
   - --by-area is a heuristic: it attributes a turn's cost to a sub-project only by the
     file paths in that same assistant message. Reasoning/text-only turns carry no path
@@ -31,19 +33,26 @@ import json, glob, os, argparse, math, re, datetime as dt
 from collections import defaultdict
 
 # Per-token rates ($/token): (input, output, cache_read, cache_write_5m, cache_write_1h)
+# Generation-specific keys first; the bare family keys price older generations.
 RATES = {
-    "fable":  (10e-6, 50e-6, 1.0e-6, 12.5e-6, 20e-6),
-    "opus":   (5e-6,  25e-6, 0.5e-6, 6.25e-6, 10e-6),
-    "sonnet": (3e-6,  15e-6, 0.3e-6, 3.75e-6, 6e-6),
-    "haiku":  (1e-6,  5e-6,  0.1e-6, 1.25e-6, 2e-6),
+    "fable-5-1": (10e-6,  50e-6,  0.25e-6, 12.5e-6,  20e-6),   # Fable 5.1 / Mythos 5.1
+    "fable":     (10e-6,  50e-6,  1.0e-6,  12.5e-6,  20e-6),   # Fable 5 / Mythos 5
+    "opus-5-5":  (4e-6,   20e-6,  0.2e-6,  5e-6,     8e-6),
+    "opus":      (5e-6,   25e-6,  0.5e-6,  6.25e-6,  10e-6),   # Opus 5 / 4.x
+    "sonnet-5":  (2e-6,   10e-6,  0.2e-6,  2.5e-6,   4e-6),    # Sonnet 5 / 5.5
+    "sonnet":    (3e-6,   15e-6,  0.3e-6,  3.75e-6,  6e-6),    # Sonnet 4.x
+    "haiku-5-5": (0.1e-6, 0.5e-6, 0.01e-6, 0.125e-6, 0.2e-6),
+    "haiku":     (1e-6,   5e-6,   0.1e-6,  1.25e-6,  2e-6),    # Haiku 4.5
 }
 
 def tier(model):
     m = (model or "").lower()
-    if "fable" in m or "mythos" in m: return "fable"
-    if "opus" in m: return "opus"
-    if "sonnet" in m: return "sonnet"
-    if "haiku" in m: return "haiku"
+    if m in ("opus", "sonnet", "haiku"):  # bare Claude Code aliases = current generation
+        m = {"opus": "opus-5-5", "sonnet": "sonnet-5-5", "haiku": "haiku-5-5"}[m]
+    if "fable" in m or "mythos" in m: return "fable-5-1" if re.search(r"-5-1\b", m) else "fable"
+    if "opus" in m: return "opus-5-5" if "opus-5-5" in m else "opus"
+    if "sonnet" in m: return "sonnet-5" if re.search(r"sonnet-5(?!\d)", m) else "sonnet"
+    if "haiku" in m: return "haiku-5-5" if "haiku-5-5" in m else "haiku"
     return "opus"  # unrecognized model - priced at opus rate (may over-estimate); update RATES if needed
 
 def parse_args():

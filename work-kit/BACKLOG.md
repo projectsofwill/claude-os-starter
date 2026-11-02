@@ -14,11 +14,11 @@ Captured so they don't get lost. Build each one only when a real need shows up.
 | Playbook: deal health / slip signals | Pipeline reviews are recurring and the CRM connector exists |
 | Playbook: forecast hygiene (category snapshots, push vs slip) | You own or support the forecast call |
 | Playbook: closed-lost analysis (dropdown reason vs evidence) | A quarter of closed-lost data + call transcripts are reachable |
-| Recall layer over notes: a local search index first, then episodic memory (e.g. a self-hosted Hindsight on the laptop, LLM calls on the company account) | About 200+ notes, or "didn't we decide X?" stops getting answered by grep |
+| Recall layer over notes: a local search index first (SQLite FTS5: BM25 ranking built in, ships with Python's `sqlite3`, no install), then episodic memory (e.g. a self-hosted Hindsight on the laptop, LLM calls on the company account) | About 200+ notes, or "didn't we decide X?" stops getting answered by grep |
 | Folder-index checker (fails a commit when an `index.md` drifts) | Indexes start going stale by hand |
 | Obsidian as a viewer | You'd actually browse the graph (IT approval needed) |
 | `/spinoff` + `/handback` (parallel sessions) | You regularly run two sessions at once |
 | Hygiene pass (stale STATUS, bloated memory index) | Monthly, once the repo has a month of use |
 
 Playbooks are rebuilt from first principles against the company's real stack and data. Nothing is copied
-from personal projects.
+from personal projects. Starting hypotheses for each live in `revops/idea-bank.md`.

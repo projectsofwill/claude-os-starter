@@ -1,1 +1,1 @@
-{ "name": "belki-band", "version": "0.1.0", "description": "Band above the prompt: Belki tasks overdue and due today. Hidden when clear.", "types": "./types/index.d.ts" }
+{"name": "belki-band", "version": "0.2.0", "description": "Band above the prompt: Belki tasks overdue, due today and to chase. /belki (opens by itself in the Desktop app) shows open tasks in a side pane, grouped by project, with who each waits on.", "types": "./types/index.d.ts"}

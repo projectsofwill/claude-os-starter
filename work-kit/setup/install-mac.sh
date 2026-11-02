@@ -107,6 +107,7 @@ CLAUDE_PAYLOAD=$("${PY:-python3}" -c 'import json,sys; b=sys.argv[1]; print(json
   "env": {"CLAUDE_CODE_ENABLE_FUNCTION_HOOKS": "1",
           "BELKI_HELPER": b + "/.claude/skills/todo/scripts/belki.py",
           "WORK_BRAIN_DIR": b},
+  "cleanupPeriodDays": 365,
   "statusLine": {"type": "command", "command": "bash ~/.claude/statusline.sh"}}))' "$BRAIN" 2>/dev/null || echo '{}')
 merge "$HOME/.claude/settings.json" dict "$CLAUDE_PAYLOAD"
 merge "$VSUSER/settings.json" dict "$(cat "$SETUP/vscode/user-settings.json")"

@@ -13,21 +13,15 @@
     },
     {
       "name": "belki-band",
-      "description": "Belki tasks overdue / due today above the prompt (own build, 2026-10-07)",
-      "version": "0.1.0",
+      "description": "Belki tasks overdue / due today / to chase above the prompt (own build, 2026-10-07); /belki side pane grouped by project with waiting-on owners (ported from the personal 0.3.0, 2026-10-30)",
+      "version": "0.2.0",
       "source": "./belki-band"
     },
     {
-      "name": "diff-fold",
-      "description": "Folds every Edit/Write/NotebookEdit diff, files a Bash command edits, and Bash/PowerShell output over 2 lines (keeping its last line), to one transcript line (own build, 2026-10-08)",
-      "version": "0.1.10",
-      "source": "./diff-fold"
-    },
-    {
-      "name": "prismantis",
-      "description": "Themed reply rendering (NahumLitvin/prismantis 0.12.0, auto-update dropped 2026-10-08); local patches: tool rows in a fixed grey via `toolColor` (default #444c56), inline code gets a background",
-      "version": "0.12.0-local.1",
-      "source": "./prismantis"
+      "name": "skins",
+      "description": "Transcript skins: tool rows, code/diff/table/math/Mermaid cards, links, folding, usage band, themes; /skin (hellosverre/claude-skins 985ad63, MIT, vetted 2026-10-29; local patches: xychart hang guard, no 0 hotkey, Desktop band nesting, terminal edit diffs fold into their row)",
+      "version": "0.5.15-local.2",
+      "source": "./skins"
     }
   ]
 }

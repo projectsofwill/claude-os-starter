@@ -13,7 +13,8 @@ working memory for that job. It is a router: read the file that fits the task, d
 - `CONTEXT.md`: the glossary (metric definitions, stage names, fields, each with a source of truth).
   Use its terms exactly. If a request uses an undefined term, pin it (`/prompt-enhancer`) before querying anything.
 - `revops/`: `stack-map.md` (GTM systems, objects, automations, owners), `queries.md` (saved queries: what
-  each answers and what it ties to), `changelog.md` (every production change, gated or not).
+  each answers and what it ties to), `changelog.md` (every production change, gated or not),
+  `idea-bank.md` (RevOps AI patterns to test; scan it before designing an automation from scratch).
 - `analysis/`: one folder per data question (query + notes with the tie-out). Raw exports are gitignored.
 - `STATUS.md`: dashboard, one line per workstream. Each workstream's handoff is `projects/<name>/STATUS.md`.
   A workstream is **recurring** (forecast, QBR prep: STATUS + a `## Runbook` improved each cycle) or a

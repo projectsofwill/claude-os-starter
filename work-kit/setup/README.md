@@ -15,7 +15,7 @@ kit binding instead), backs up every JSON file it edits, and prints a pass/fail 
 |---|---|
 | Prereqs | Checks `claude`, `python3`, `jq` (statusline), Obsidian (Belki UI) |
 | Mods | Adds `setup/mods` as the `work-mods` marketplace and installs every listed mod |
-| Claude settings | Adds `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` (mods need it), `BELKI_HELPER` + `WORK_BRAIN_DIR` (the Belki band), and the statusline |
+| Claude settings | Adds `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` (mods need it), `BELKI_HELPER` + `WORK_BRAIN_DIR` (the Belki band), `cleanupPeriodDays: 365` (keeps session transcripts a year instead of 30 days, so `/usage-cost` and `/resume` see history; check this fits company data-retention policy), and the statusline |
 | Statusline | Copies `claude/statusline.sh` to `~/.claude/` if absent (model, effort, context %, rate limits, cache) |
 | VS Code | Adds `claudeCode.useTerminal` + the terminal keybindings (Cmd+A clears the prompt line, Ctrl+Z can't suspend Claude) to the default profile; installs the launcher extension unpacked |
 | Memory | Symlinks Claude Code's auto-memory folder for this repo to `memory/`, so the harness and the router share one versioned store |
@@ -28,9 +28,8 @@ kit binding instead), backs up every JSON file it edits, and prints a pass/fail 
 
 | Mod | What it shows | Note |
 |---|---|---|
-| belki-band | Belki overdue · due today · to chase, above the prompt | Own build. Reads `BELKI_HELPER` |
-| diff-fold | Folds diffs and long command output to one line | Own build |
-| prismantis | Themed rendering: tables, alerts, diagrams | MIT (Nahum Litvin); bundles Prism + beautiful-mermaid, see `docs/THIRD_PARTY_NOTICES.md` |
+| belki-band | Belki overdue · due today · to chase, above the prompt; `/belki` opens a side pane of open tasks grouped by project, with who each waits on | Own build. Reads `BELKI_HELPER` |
+| skins | Themed transcript: tool rows, code/diff/table/math/Mermaid cards, folding, a usage band; `/skin` switches themes | MIT (hellosverre/claude-skins); daily update check fetches its GitHub `plugin.json` (local version never reads as behind, so it stays quiet) |
 | agent-radar | Live line per running subagent; `/radar` | MIT (Hamza Zafar, claude-code-mods) |
 
 Kept to mods that make no model calls of their own and that pass their tests.
