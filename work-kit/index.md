@@ -2,7 +2,7 @@
 
 * [README](README.md) - Entry point: policy checks, setup commands, the Day-1 prompt, daily loop.
 * [CLAUDE](CLAUDE.md) - The router: where things are, house rules, RevOps gate, budget profile line.
-* [BUDGET](BUDGET.md) - Subscription vs metered profiles: model routing, fan-out, spend checks.
+* [BUDGET](BUDGET.md) - Subscription vs metered profiles: model routing, fan-out, spend checks, metered settings, other company AI seats.
 * [CONTEXT](CONTEXT.md) - RevOps glossary seed (pipeline, forecast, bookings, usage revenue), each metric with source + owner.
 * [STATUS](STATUS.md) - Dashboard: one line per workstream plus the top Next items.
 * [BACKLOG](BACKLOG.md) - Day-30+ ideas with the condition that justifies building each.

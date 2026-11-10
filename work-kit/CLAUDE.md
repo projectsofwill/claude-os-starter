@@ -68,8 +68,9 @@ comp/quota/forecast numbers going to leadership, or anything customer-facing**:
 
 1. Dry-run or sandbox first, and show the row count and a sample of what would change.
 2. Take a backup export of the affected records/config.
-3. Critique: a different-model reviewer if the company provides one, otherwise an Opus subagent with the
-   literal change + intent. Incorporate material findings.
+3. Critique: a different-model reviewer if the company provides one (e.g. its ChatGPT/Codex workspace; see
+   `BUDGET.md` § Other company AI seats), otherwise an Opus subagent with the literal change + intent.
+   Incorporate material findings.
 4. Get my explicit go.
 5. For a system or data change, after it runs: add the entry to `revops/changelog.md` (why, scope, backup, rollback, verified).
 

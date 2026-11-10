@@ -55,6 +55,19 @@ the month it resets; drop them if there's no cap):
   machine's Claude Code use only (not claude.ai chat, not other machines); the admin console has the real
   number.
 
+## Other company AI seats
+
+If the company also provides a flat-rate AI workspace (e.g. ChatGPT Business/Enterprise), route work by
+whether it needs this repo:
+
+| Work | Where |
+|---|---|
+| Drafts, brainstorming, explaining a concept, summarizing a doc you paste in | The other seat: it costs this budget nothing |
+| Anything that reads or writes this repo (meeting ingest, STATUS, analysis, tasks) | Claude Code |
+| RevOps gate step 3 (critique) | The other seat: paste the literal change + intent, or run its CLI agent (e.g. Codex) here if the workspace includes it |
+
+Company seat only, same as Claude: never a personal account. Paste only what the company's AI policy allows.
+
 **Habits that matter more than any file trim:**
 - `/clear` between unrelated tasks. Every turn re-reads the whole conversation, so cost grows with length.
 - Pick model and effort at the start. Switching model mid-session rebuilds the cache from scratch.
