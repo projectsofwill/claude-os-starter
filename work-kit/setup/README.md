@@ -16,7 +16,7 @@ kit binding instead), backs up every JSON file it edits, and prints a pass/fail 
 | Prereqs | Checks `claude`, `python3`, `jq` (statusline), Obsidian (Belki UI) |
 | Mods | Adds `setup/mods` as the `work-mods` marketplace and installs every listed mod |
 | Claude settings | Adds `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` (mods need it), `BELKI_HELPER` + `WORK_BRAIN_DIR` (the Belki band), `cleanupPeriodDays: 365` (keeps session transcripts a year instead of 30 days, so `/usage-cost` and `/resume` see history; check this fits company data-retention policy), and the statusline |
-| Statusline | Copies `claude/statusline.sh` to `~/.claude/` if absent (model, effort, context %, rate limits, cache) |
+| Statusline | Copies `claude/statusline.sh` to `~/.claude/` if absent (model, effort, context %, cache; 5-hour/weekly limits only on plans that report them; spend vs cap when `WORK_SPEND_*` is set, see `BUDGET.md`). An existing copy is left alone: to upgrade, copy the new file over it |
 | VS Code | Adds `claudeCode.useTerminal` + the terminal keybindings (Cmd+A clears the prompt line, Ctrl+Z can't suspend Claude) to the default profile; installs the launcher extension unpacked |
 | Memory | Symlinks Claude Code's auto-memory folder for this repo to `memory/`, so the harness and the router share one versioned store |
 

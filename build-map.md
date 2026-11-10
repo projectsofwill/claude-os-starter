@@ -149,7 +149,7 @@ So the loop for each step is: read the step here for the *why*, grab the service
 
 **What it is.** One place to register and run scheduled jobs (do not scatter one-off cron jobs). The first real automation: a weekly brief that researches a topic, drafts an email, and publishes an archive, with a hard rule that it *never sends on its own*.
 
-> **Is this the same as Step 7 (Hermes)?** No, and the difference is worth getting straight. Step 6 is just "something runs on a schedule," and it needs no server and no agent. Mine started as a plain scheduled job on my laptop (a timer firing a Python script). Step 7 is the always-on *agent* you talk to from your phone that also perceives your calendar and inbox. The two overlap in my setup today only because I later moved this newsletter job onto the Hermes box once it existed, but you do not need Step 7 to do Step 6. You can do this on your laptop and stop here.
+> **Is this the same as Step 7 (Hermes)?** No, and the difference is worth getting straight. Step 6 is just "something runs on a schedule," and it needs no server and no agent. Mine started as a plain scheduled job on my laptop (a timer firing a Python script). Step 7 is the always-on *agent* you talk to from your phone that also perceives your calendar and inbox. The two overlapped in my setup only because I later moved this newsletter job onto the Hermes box once it existed, but you do not need Step 7 to do Step 6. You can do this on your laptop and stop here.
 
 **What it buys you.** The OS crosses from "responds when asked" to "does scheduled work." This is the first taste of Cadence, and it forces your first real Connection (it has to read and write something live).
 
@@ -158,7 +158,8 @@ So the loop for each step is: read the step here for the *why*, grab the service
 - **Every loop has four parts:** a trigger (schedule), the skills that do the work, a goal plus verification (how it knows it is done), and an output written to a file (the repo does not forget).
 - **Think queues, not daemons.** Frame an automation as a backlog of tasks with human checkpoints, not an infinite runner. (Matt Pocock's "queues, not loops.")
 - **Cap everything.** A hard iteration limit, a way to detect when it is stuck and bail, and a token ceiling. Unbounded loops burn money fast.
-- **Keep a human gate on anything that leaves the building.** My newsletter drafts an email and never sends it. The send is one click, by me. (More on why under "keys not prompts" below.)
+- **Keep a human gate on anything that leaves the building.** My newsletter drafted an email and never sent it. The send was one click, by me. (More on why under "keys not prompts" below.)
+- **Retire what you stop reading.** My newsletter ran 19 weekly issues (June to October 2026). Then I noticed I had stopped opening it, so I turned it off and distilled the back catalog into a reference doc. An ignored job still costs tokens, keys, and a debugging session every time something upstream breaks. Net: a scheduled job earns its keep only while someone reads the output.
 
 **Yours to fill.** Skeleton: the single-runner discipline, the loop anatomy, the caps, the never-auto-send gate. Filling: what the automation actually does. A weekly brief is a good first one because it exercises research, drafting, and publishing at once.
 
@@ -201,7 +202,7 @@ Step 7 is the only step where I run a named third-party framework, so here is th
 
 **The task board.** The profiles coordinate through a shared task board (a small database), not by chatting to each other. You drop a request ("research the new model release and flag anything that affects my setup"), the orchestrator files it, a specialist picks it up. The board survives restarts, which agent-to-agent chat does not.
 
-**What it does on a cadence.** A morning brief at 8am (calendar plus inbox plus overnight research plus one nudge), a daily news ingest, and the weekly newsletter from Step 6, all firing on their own. That is the payoff: I wake up to a brief that already read my day.
+**What it does on a cadence.** A morning brief at 8am (calendar plus inbox plus overnight research plus one nudge) and a daily news ingest, both firing on their own. (The weekly newsletter from Step 6 ran here too until I retired it.) That is the payoff: I wake up to a brief that already read my day.
 
 **The security posture (non-negotiable, all from Step 7's principles).**
 - **Telegram allow-list.** Exactly one user ID (yours) can talk to the agent. Test it from a second account; it must refuse.

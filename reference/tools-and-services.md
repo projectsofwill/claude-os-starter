@@ -76,12 +76,13 @@ The full capture-to-ingest workflow and its decisions (PDF handling, the YouTube
 
 - **A scheduler you already have** — this is the key point: Step 6 needs no server.
   - macOS: **launchd** (what I started on). Linux: **cron** or **systemd timers**. Windows: **Task Scheduler**.
-- **[Perplexity API](https://docs.perplexity.ai)** — research synthesis for my weekly newsletter (it does
-  the "go read the web and summarize" part). Paid, usage-based; modest at weekly cadence.
+- **[Perplexity API](https://docs.perplexity.ai)** — research synthesis for my weekly newsletter while it
+  ran (it did the "go read the web and summarize" part). Paid, usage-based; modest at weekly cadence.
   - *Alternative:* have Claude do the synthesis directly and skip Perplexity.
 - **[Gmail API](https://developers.google.com/gmail/api)** (Google Cloud, free tier) — to create the email
-  **draft**. The automation never sends; I do.
-- **[GitHub Pages](https://pages.github.com)** (free) — hosts the public newsletter archive.
+  **draft**. The automation never sent; I did.
+- **[GitHub Pages](https://pages.github.com)** (free) — hosts the newsletter's public archive, frozen since
+  I retired it in October 2026.
 
 Cost: a few dollars a month if you use Perplexity; otherwise ~$0.
 
@@ -116,7 +117,7 @@ This is the only tier with real recurring cost and setup. Full sequence is in `h
 **Models (the agent's brains)**
 
 - **GPT-5.6 via [OpenAI Codex](https://github.com/openai/codex)** (ChatGPT Plus OAuth) — my primary across
-  the profiles: the orchestrator and the newsletter synthesis. At the time of writing this runs under my
+  the profiles, including the orchestrator. At the time of writing this runs under my
   existing ChatGPT Plus subscription with no extra per-token cost (these OAuth arrangements change, so
   check the current terms before you count on it).
 - **[Claude](https://claude.com)** (Anthropic) — the quality model for the morning brief, where it matters most.
@@ -153,7 +154,7 @@ tiers or subscriptions you may already have). Set a hard spend alert from day on
 
 ## The discipline layer (throughout)
 
-- **[Codex](https://github.com/openai/codex)** (OpenAI's CLI, running GPT-5.6 on a ChatGPT Plus plan) — my
+- **[Codex](https://github.com/openai/codex)** (OpenAI's CLI on a ChatGPT Plus plan, pinned to its strongest model: GPT-6.1-sol as of November 2026) — my
   **second-model review gate**. Before I run anything risky, a *different* model family stress-tests it.
   Using a different vendor than Claude is deliberate: independent error modes, so it catches what Claude's
   own review would miss.

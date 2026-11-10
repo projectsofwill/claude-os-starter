@@ -110,7 +110,8 @@ scheduling + dispatch), a **researcher** (reads the web, locked-down, captures i
 review), and an **EA** (reads calendar/inbox, writes the morning brief, can draft but never send). I also
 run two personal-data agents I talk to over Telegram day to day: **Alfred** (food, people) and **Arnold**
 (fitness), which read and write the database. They coordinate through a shared task board, not by talking
-to each other. Cadence: a morning brief at 8am, a daily news ingest, and the weekly newsletter. Full setup
+to each other. Cadence: a morning brief at 8am and a daily news ingest (a weekly newsletter ran here until
+I retired it in October 2026). Full setup
 steps are in `hermes-setup-runbook.md`.
 
 ### The `Hermes/` folder vs the Hermes VPS

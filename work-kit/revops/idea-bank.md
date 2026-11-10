@@ -1,12 +1,30 @@
 # RevOps AI idea bank
 
 Starting hypotheses for AI and automation work in RevOps, distilled from 19 issues of a weekly RevOps AI
-newsletter (2026-06 to 2026-10; `#n` = issue number, kept for provenance). **These are ideas to test, not playbooks.** Playbooks are rebuilt against the
+newsletter (2026-06 to 2026-10; `#n` = issue number, kept for provenance) plus later research notes
+(`(R)`: webinars, operator talks, and newsletters read since). **These are ideas to test, not playbooks.** Playbooks are rebuilt against the
 company's real stack and data (see `BACKLOG.md`). Anything that writes to a system still goes through the
 RevOps gate in `CLAUDE.md`. Vendor claims and benchmarks from the issues are unverified.
 
 How to use: when a request lands, scan the matching section for a pattern before designing from scratch.
 When an idea gets built or ruled out, note it here with a link to the project folder.
+
+**Operating rule: constraint first, KPI second, build third.** Don't automate the merely repetitive. Find the
+constraint that gates revenue, attach a number to it, ship a small proof in one corner, then formalize. (R)
+
+## The context layer (why any of this works)
+
+AI output is only as good as the curated context it reads: definitions, playbooks, and which data is trusted.
+Layer it by how often it changes: **foundational** (ICP, strategy), **middle** (playbooks, process), **data**
+(what's working now). Reps don't query it; tools read it and serve answers back. Giving an AI *data* is not
+giving it *context*. (R)
+
+- **Governed semantic layer first.** Before agents answer metric questions, pin which definitions need
+  governing first (for usage-based revenue: usage, consumption, pipeline). (R)
+- **A deal-context brain.** One reporting schema joining CRM, call notes, and chat threads, so one query
+  answers what eight tool calls with no shared context can't. Build it only in company-controlled
+  infrastructure (the existing warehouse or a sanctioned sandbox), pitched as reporting-schema work. Start
+  read-only on one workflow (forecast-call prep) and prove it beats manual assembly first. (R)
 
 ## First 30 days: audit before building
 
@@ -64,6 +82,12 @@ When an idea gets built or ruled out, note it here with a link to the project fo
 - **Monte Carlo vs commit (prototype).** Per-deal close-probability distributions over open pipeline,
   compared to the CRM commit; the biggest disagreements become the forecast-call agenda. Backtest before
   trusting. (#4)
+- **Slip brief before the forecast call.** For each pushed or closed-lost deal: pull CRM history, call
+  recordings, and chat threads, compare against the qualification notes, and draft a brief (original close
+  date, push count, root cause, recommended action). Surfaces reasons the closed-lost dropdown never
+  captured. (R)
+- **Morning pipeline scoreboard.** Read-only CRM access each morning → what moved, what's stuck, who needs a
+  touch. Run it beside the existing pipeline review for a week and compare. (R, anecdote)
 - **Vendor pilots.** Before buying forecast or revenue-intelligence tools, pick what matters most
   (accuracy, explainability, coaching, adoption) and run a time-boxed weighted pilot. (#13)
 
@@ -85,6 +109,13 @@ When an idea gets built or ruled out, note it here with a link to the project fo
   opener; track touch-within-SLA. (#1)
 - **Capacity-aware assignment.** Re-evaluate unworked records every 24h; audit fairness per rep (volume,
   conversion, response time, overrides). (#9)
+- **Account prioritization with a "rep sniff test".** On top of fit x intent quadrants, have the model judge
+  accounts the way a good rep would (do they run demand-gen, hire for the problem). Validate against pipeline
+  generated, not model confidence. (R)
+- **Qualification scorecard.** Score calls + CRM against the qualification framework (e.g. MEDDPICC); a cheap
+  model handles the classification layer (vendor anecdote: ~15k accounts for ~$30). (R)
+- **Relevance over personalization in outbound.** Open with the buyer's likely problem for their segment
+  instead of tokens like school or a recent post. A/B one sequence step. (R, anecdote)
 
 ## Low-risk first builds
 
@@ -98,12 +129,25 @@ Read-only or recommend-only; each fits one project folder.
 - **Deal-by-deal win/loss.** One segment, last 90 days, one AI pass per deal (never bulk), roll up 3-5
   patterns. Feeds the closed-lost playbook in `BACKLOG.md`. (#5)
 - **Voice-of-customer themes.** Weekly themes from calls for product and enablement. (#2)
+- **Unstructured-field categorizer.** Free-text fields, "how did you hear about us", closed-lost notes,
+  ticket text → clean picklist values. Replaces humans-as-middleware. (R)
 - **Reopen dormant records.** Closed-lost, stalled evals, old inbound → enrich for a change (role,
   funding, usage) and route only records with an actionable reopen reason. Backtest the signal first. (#7)
 - **Signal capture from calls.** One category (stakeholder change or expansion mention) → exact quote +
   drafted action to the owner; write only to notes / non-forecast fields at first. (#10)
 - **Small internal apps** to replace spreadsheet-plus-Slack request flows (territory exceptions, discount
-  checks, renewal prep). Internal first, never customer-facing first. (#18)
+  checks, renewal prep). Internal first, never customer-facing first. (#18) Tension: other operators argue
+  for embedding at the trigger level inside existing tools instead of standalone apps, which tend to fade.
+  Default to embedding; build an app only when the workflow has no home. (R)
+
+## Picking the tool
+
+- **Route by where the data lives.** External data (firmographics, news, intent) → an enrichment platform.
+  Internal, trigger-driven work (CRM, sheets, chat) → a workflow tool plus an LLM step. Pure analysis or
+  drafting → the chat assistant directly, no infrastructure. (R)
+- **Prompt as spec.** Intent → action → data sources → filters → output format → metrics → connectors →
+  guardrails. `/prompt-enhancer` does this. (R)
+- **Cheap model for classification**, stronger model only for reasoning. (R)
 - **Slack summaries in the forecast cadence.** Replace one report-pull step with a Slack deal summary for
   two weeks and compare. (#3)
 
@@ -132,6 +176,8 @@ Read-only or recommend-only; each fits one project folder.
 
 ## Measuring it
 
+- **Replace "time saved":** recovered selling capacity (did reps get their week back, and did it show in
+  pipeline) and pipeline $ per rep per month. Quality metrics, not usage vanity metrics. (R)
 - **Agent KPIs:** completion rate (not adoption), escalation rate, trust incidents, correction/override
   rate, touch-within-SLA. (#1, #5, #6)
 - **Plays as products:** each has an owner, trigger, expected outcome, and a retirement condition; watch

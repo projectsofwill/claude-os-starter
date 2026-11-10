@@ -28,7 +28,7 @@ if   (( ctx_int >= 90 )); then ctx_color="$red"
 elif (( ctx_int >= 70 )); then ctx_color="$yellow"
 else                           ctx_color="$green"; fi
 part_ctx="${ctx_color}C:${ctx_int}%${reset}"
-# Session cost so far, API-equivalent (not what a subscription bills); hidden if absent
+# Session cost so far at list price (a real-money estimate on a metered plan); hidden if absent
 cost=$(echo "$payload" | jq -r '.cost.total_cost_usd // empty | . * 100 | round / 100 | tostring')
 [[ -n "$cost" ]] && part_ctx+="${dim} \$$(printf "%.2f" "$cost")${reset}"
 
@@ -49,6 +49,9 @@ rate_color() {
   elif (( p >= 50 )); then printf "%s" "$yellow"
   else                     printf "%s" "$green"; fi
 }
+# Only subscription plans report 5-hour/weekly limits. A metered or spend-capped plan never
+# sends rate_limits, so U/W stay hidden instead of reading a permanent green 0%.
+live_rl=$(echo "$payload" | jq -r 'if (.rate_limits.five_hour // .rate_limits.seven_day) then "1" else "" end')
 r5=$(echo "$payload" | jq -r '.rate_limits.five_hour.used_percentage // 0')
 r7=$(echo "$payload" | jq -r '.rate_limits.seven_day.used_percentage // 0')
 r5_resets=$(echo "$payload" | jq -r 'if .rate_limits.five_hour.resets_at != null then .rate_limits.five_hour.resets_at else "" end')
@@ -57,7 +60,7 @@ r7_resets=$(echo "$payload" | jq -r 'if .rate_limits.seven_day.resets_at != null
 # cached reading as "~N%", or 0 for a window that has reset since it was cached.
 stale=""
 rate_cache="$HOME/.claude/rate-cache.json"
-if [[ -z $(echo "$payload" | jq -r '.rate_limits // empty') && -f "$rate_cache" ]]; then
+if [[ -z "$live_rl" && -f "$rate_cache" ]]; then
   read -r r5 r5_resets r7 r7_resets < <(jq -r --argjson now "$(date +%s)" '
     def w(p; at): if ((at | tonumber?) // 0) > $now then "\(p) \(at)" else "0 -" end;
     "\(w(.r5; .r5_resets_at)) \(w(.r7; .r7_resets_at))"' "$rate_cache" | tr -d '\r')
@@ -74,8 +77,37 @@ until_reset() {
   elif (( s < 86400 )); then printf " %dh%02dm" $(( s / 3600 )) $(( s % 3600 / 60 ))
   else                       printf " %dd%dh" $(( s / 86400 )) $(( s % 86400 / 3600 )); fi
 }
-part_r5="$(rate_color $r5)U:${stale}$(printf "%.0f" $r5)%${reset}${dim}$(until_reset "$r5_resets")${reset}"
-part_r7="$(rate_color $r7)W:${stale}$(printf "%.0f" $r7)%${reset}${dim}$(until_reset "$r7_resets")${reset}"
+part_r5=""; part_r7=""
+if [[ -n "$live_rl" || -n "$stale" ]]; then
+  part_r5="$(rate_color $r5)U:${stale}$(printf "%.0f" $r5)%${reset}${dim}$(until_reset "$r5_resets")${reset}"
+  part_r7="$(rate_color $r7)W:${stale}$(printf "%.0f" $r7)%${reset}${dim}$(until_reset "$r7_resets")${reset}"
+fi
+
+# ── 6. Spend vs a monthly cap (metered plans) ───────────────────────────────
+# Opt-in: set WORK_SPEND_CAP_USD and WORK_SPEND_RESET_DAY in the env block of
+# ~/.claude/settings.json. Spend = list-price estimate of this machine's Claude Code
+# transcripts since the last reset (cost.py --cycle-spend), refreshed in the background
+# at most every 10 minutes so the statusline never waits on it. It misses usage on
+# other machines and in claude.ai chat; the admin console has the real figure.
+part_spend=""
+cost_py="${WORK_BRAIN_DIR:-$HOME/work-brain}/.claude/skills/usage-cost/cost.py"
+if [[ "$WORK_SPEND_CAP_USD" =~ ^[0-9]+$ && "$WORK_SPEND_RESET_DAY" =~ ^[0-9]+$ && -f "$cost_py" ]]; then
+  spend_cache="$HOME/.claude/spend-cache.txt"
+  if [[ -z $(find "$spend_cache" -mmin -10 2>/dev/null) ]]; then
+    touch "$spend_cache"  # claim the refresh so overlapping renders don't each start a scan
+    ( "${PY:-python3}" "$cost_py" --cycle-spend "$WORK_SPEND_RESET_DAY" > "$spend_cache.tmp" \
+        && [[ -s "$spend_cache.tmp" ]] && mv "$spend_cache.tmp" "$spend_cache" ) </dev/null >/dev/null 2>&1 &
+  fi
+  read -r spent days_left cycle_days < <(tr -d '\r' < "$spend_cache" 2>/dev/null)
+  if [[ "$spent" =~ ^[0-9]+(\.[0-9]+)?$ && "$days_left" =~ ^[0-9]+$ && "$cycle_days" =~ ^[0-9]+$ ]] && (( cycle_days > 0 )); then
+    used_pct=$(( ${spent%.*} * 100 / WORK_SPEND_CAP_USD ))
+    elapsed_pct=$(( (cycle_days - days_left) * 100 / cycle_days ))
+    if   (( used_pct >= 80 ));         then spend_color="$red"
+    elif (( used_pct > elapsed_pct )); then spend_color="$yellow"  # ahead of an even pace
+    else                                    spend_color="$green"; fi
+    part_spend="${spend_color}\$$(printf "%.0f" "$spent")/\$${WORK_SPEND_CAP_USD}${reset}${dim} ${days_left}d${reset}"
+  fi
+fi
 
 # ── 7. Folder ───────────────────────────────────────────────────────────────
 folder=$(basename "$cwd")
@@ -110,8 +142,8 @@ if [[ -n "$pc" ]]; then
 fi
 
 # ── Write rate-cache.json for VS Code extension ─────────────────────────────
-# Skipped on a cached reading so a fresh session never rewrites live data with stale data.
-[[ -z "$stale" ]] && jq -n \
+# Skipped on a cached reading (never overwrite live data with stale) and on plans without limits.
+[[ -n "$live_rl" ]] && jq -n \
   --argjson r5    "$(printf "%.0f" $r5)" \
   --argjson r7    "$(printf "%.0f" $r7)" \
   --arg     r5at  "$r5_resets" \
@@ -124,7 +156,10 @@ fi
   > "$HOME/.claude/rate-cache.json" 2>/dev/null || true
 
 # ── Assemble and print ──────────────────────────────────────────────────────
-line="$part_model${sep}$part_r5${sep}$part_r7${sep}$part_ctx"
+line="$part_model"
+[[ -n "$part_spend" ]] && line+="${sep}$part_spend"
+[[ -n "$part_r5" ]] && line+="${sep}$part_r5${sep}$part_r7"
+line+="${sep}$part_ctx"
 [[ -n "$part_cache" ]] && line+="${sep}$part_cache"
 line+="${sep}$part_folder"
 [[ -n "$part_git" ]] && line+="${sep}$part_git"

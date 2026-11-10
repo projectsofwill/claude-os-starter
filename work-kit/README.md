@@ -14,6 +14,20 @@ per-workstream STATUS). Generic on purpose: company specifics get filled in on d
 - [ ] Python 3 installed? (Hooks are fail-open: without it they do nothing, and nothing breaks.)
 - [ ] Obsidian allowed? Belki (the task UI) is an Obsidian plugin.
 - [ ] OK to install unsigned local tools (Claude Code mods, an unpacked VS Code extension)?
+- [ ] Does keeping Claude Code transcripts for a year fit data-retention policy? The installer sets `cleanupPeriodDays: 365`; if not, lower it in `~/.claude/settings.json`.
+
+## Fresh laptop prerequisites
+
+Install Claude Code and VS Code, then set up git with your **work** email:
+
+```bash
+xcode-select --install   # provides git and python3; wait for it to finish
+git config --global user.name "<Your Name>"
+git config --global user.email "<work email>"
+```
+
+If `git` prints an Xcode license error, run `sudo xcodebuild -license accept`. The statusline also needs `jq`
+(`brew install jq`, if Homebrew is allowed); without it everything else still works.
 
 ## Setup
 
@@ -29,8 +43,8 @@ Then:
 1. `bash setup/install-mac.sh --dry-run`, then without `--dry-run`: mods, statusline, VS Code launcher +
    keybindings, one memory store. Details: [setup/README.md](setup/README.md).
 2. Install Obsidian, open `~/work-brain` as a vault, install the **belki** community plugin.
-3. Paste your personal `working-style.md` and `brand-voice.md` into `context/` (email them to yourself;
-   they're preferences, not confidential).
+3. Paste your personal `working-style.md` and `brand-voice.md` into `context/`. Trim them first: no health,
+   family, or side-project detail, because this repo lives on a company laptop.
 4. If the policy allows it, add Anthropic's document skills (Excel, PowerPoint, Word, PDF) for QBR decks
    and models:
 
@@ -48,7 +62,9 @@ This repo is my work second brain; read CLAUDE.md first. Set it up with me, one 
 confirming before each write:
 
 1. Interview me (short rounds) to fill context/about-me-work.md. Work-only: no personal-life detail.
-2. Ask which budget profile applies (subscription or metered) and set the line in CLAUDE.md.
+2. Ask which budget profile applies (subscription or metered) and set the line in CLAUDE.md. If metered,
+   show me the "Metered settings" block in BUDGET.md with my cap and reset day filled in, and merge it into
+   ~/.claude/settings.json after I confirm (keep existing keys).
 3. Replace the router placeholders (<Name>, <role>, <team>, <company>).
 4. Ask what I know so far about the GTM stack and fill what I can in revops/stack-map.md; leave the
    rest as placeholders. Same for the <confirm> items in CONTEXT.md I can already answer.

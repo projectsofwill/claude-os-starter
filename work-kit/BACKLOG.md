@@ -19,6 +19,9 @@ Captured so they don't get lost. Build each one only when a real need shows up.
 | Obsidian as a viewer | You'd actually browse the graph (IT approval needed) |
 | `/spinoff` + `/handback` (parallel sessions) | You regularly run two sessions at once |
 | Hygiene pass (stale STATUS, bloated memory index) | Monthly, once the repo has a month of use |
+| Process inventory: one table in `revops/` (process, owner, frequency, AI level, value 1-5, pain 1-5, consumes/produces); high value + high pain = pilot candidate. Pattern: ICM Context map form (RinDig/icm-architect), table only, no folder graph | `stack-map.md` is filled in and you're choosing a first automation |
+| Stage contracts for a recurring workstream (inputs, job, output, check per step). Pattern: ICM | A `## Runbook` has run about 3 cycles and still misses steps |
+| Document claim sourcing: a source register with page/section locators, plus a flag on figures never checked against their source. Pattern: familiar (familiar-md/familiar); rebuild it, don't install it | A wrong or untraceable claim from a long document (comp plan, pricing policy, order form), or a workstream resting on several of them |
 
 Playbooks are rebuilt from first principles against the company's real stack and data. Nothing is copied
 from personal projects. Starting hypotheses for each live in `revops/idea-bank.md`.

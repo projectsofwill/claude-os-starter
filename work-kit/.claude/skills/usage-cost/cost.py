@@ -10,10 +10,11 @@ Usage:
   python3 cost.py --days 7             # last N days
   python3 cost.py --today              # today only
   python3 cost.py --project work-brain # only project dirs whose path contains this
-  python3 cost.py --cache-ttl 1h       # price cache writes at the 1-hour rate (default 5m)
+  python3 cost.py --cache-ttl 1h       # price unrecorded cache writes at the 1-hour rate (default 5m)
   python3 cost.py --by-session         # + exact per-session breakdown (every token counted once)
   python3 cost.py --by-area            # + APPROXIMATE per-sub-project breakdown (file-path heuristic)
   python3 cost.py --blocks             # show usage grouped into 5-hour billing windows
+  python3 cost.py --cycle-spend 30     # statusline: "spent days_left cycle_days" for a cycle resetting on the 30th
 
 Notes:
   - This is the API/Console pay-as-you-go cost. On a flat Max subscription you pay
@@ -29,7 +30,7 @@ Notes:
     and land in (unattributed) - typically the majority of cost. The section prints how
     much of total cost it could actually attribute. Do not read it as precise dollars.
 """
-import json, glob, os, argparse, math, re, datetime as dt
+import json, glob, os, argparse, math, re, calendar, datetime as dt
 from collections import defaultdict
 
 # Per-token rates ($/token): (input, output, cache_read, cache_write_5m, cache_write_1h)
@@ -71,7 +72,22 @@ def parse_args():
     p.add_argument("--changelog", nargs="?", const="ops/CHANGES.log", default=None,
                    help="tag each session with matching CHANGES.log task names "
                         "(default path ops/CHANGES.log); implies --by-session")
+    p.add_argument("--cycle-spend", type=int, metavar="DAY",
+                   help="print only 'spent days_left cycle_days' for the monthly cycle "
+                        "that resets on DAY (for the statusline)")
     return p.parse_args()
+
+def cycle_bounds(day, today=None):
+    """Last and next reset dates of a monthly cycle resetting on `day` (clamped to month length)."""
+    today = today or dt.date.today()
+    def on(y, m):
+        return dt.date(y, m, min(day, calendar.monthrange(y, m)[1]))
+    this = on(today.year, today.month)
+    if today >= this:
+        nxt = (today.year + 1, 1) if today.month == 12 else (today.year, today.month + 1)
+        return this, on(*nxt)
+    prev = (today.year - 1, 12) if today.month == 1 else (today.year, today.month - 1)
+    return on(*prev), this
 
 def since_date(a):
     if a.today:
@@ -86,11 +102,18 @@ def since_date(a):
 def usage_cost(u, t, cw5):
     """Dollar cost of one usage block at the given model tier."""
     ri, ro, rr, rw5, rw1 = RATES[t]
-    rw = rw5 if cw5 else rw1
+    cw = u.get("cache_creation_input_tokens", 0) or 0
+    split = u.get("cache_creation")
+    if isinstance(split, dict) and "ephemeral_1h_input_tokens" in split:
+        # the record says which TTL each write used: price it exactly
+        w1 = min(split.get("ephemeral_1h_input_tokens") or 0, cw)
+        write = w1 * rw1 + (cw - w1) * rw5
+    else:
+        write = cw * (rw5 if cw5 else rw1)
     return ((u.get("input_tokens", 0) or 0) * ri
             + (u.get("output_tokens", 0) or 0) * ro
             + (u.get("cache_read_input_tokens", 0) or 0) * rr
-            + (u.get("cache_creation_input_tokens", 0) or 0) * rw)
+            + write)
 
 # --- file-path -> sub-project area (heuristic, --by-area only) -------------------
 WS_MARKER = "desktop/claude os/"
@@ -297,6 +320,9 @@ def main():
     a = parse_args()
     since = since_date(a)
     cw5 = (a.cache_ttl == "5m")
+    if a.cycle_spend:
+        cycle_start, cycle_end = cycle_bounds(a.cycle_spend)
+        since = cycle_start.isoformat()
     cl_entries = None
     if a.changelog:
         a.by_session = True  # the cross-reference enriches the per-session view
@@ -305,8 +331,12 @@ def main():
     files = sorted(glob.glob(os.path.expanduser("~/.claude/projects/**/*.jsonl"), recursive=True))
     if a.project:
         files = [f for f in files if a.project.lower() in f.lower()]
+    if since:  # a file last written before the window holds no records in it (1-day slack for UTC)
+        cutoff = dt.datetime.fromisoformat(since).timestamp() - 86400
+        files = [f for f in files if os.path.getmtime(f) >= cutoff]
 
-    agg = defaultdict(lambda: [0, 0, 0, 0])  # model -> [in, out, cache_write, cache_read]
+    agg = defaultdict(lambda: [0, 0, 0, 0, 0.0])  # model -> [in, out, cache_write, cache_read, cost]
+    seen_req = set()  # (message id, request id): one API response is logged once per content block
     # session id -> aggregated cost/tokens/last-date (only sessions with usage are emitted)
     # files/dates are populated only for --changelog (used to match CHANGES.log tasks)
     sessions = defaultdict(lambda: {"cost": 0.0, "tok": 0, "date": "",
@@ -357,6 +387,11 @@ def main():
                     u = msg.get("usage") or {}
                     if not u:
                         continue
+                    req = (msg.get("id"), r.get("requestId"))
+                    if req[0]:
+                        if req in seen_req:
+                            continue
+                        seen_req.add(req)
                     model = msg.get("model") or r.get("model") or ""
                     t = tier(model)
                     cost = usage_cost(u, t, cw5)
@@ -379,6 +414,7 @@ def main():
                     v[1] += u.get("output_tokens", 0) or 0
                     v[2] += u.get("cache_creation_input_tokens", 0) or 0
                     v[3] += u.get("cache_read_input_tokens", 0) or 0
+                    v[4] += cost
                     grand_cost += cost
 
                     # per-session (exact). sid computed above (synthetic key if missing)
@@ -408,6 +444,11 @@ def main():
                     # never let one bad record drop the rest of the transcript
                     continue
 
+    if a.cycle_spend:
+        today = dt.date.today()
+        print(f"{grand_cost:.2f} {(cycle_end - today).days} {(cycle_end - cycle_start).days}")
+        return
+
     if not agg:
         print("No usage found for that window.")
         return
@@ -424,16 +465,13 @@ def main():
         return
 
     window = since or "all time"
-    print(f"Window: {window} onward   |   cache-write priced at {a.cache_ttl} rate"
+    print(f"Window: {window} onward   |   cache writes priced at recorded TTL ({a.cache_ttl} if unrecorded)"
           + (f"   |   project~={a.project}" if a.project else ""))
     print(f"{'model':<26}{'input':>12}{'output':>12}{'cache_wr':>14}{'cache_rd':>14}{'cost $':>11}")
     print("-" * 89)
     tot = [0, 0, 0, 0]
     tot_cost = 0.0
-    for model, (i, o, cw, cr) in sorted(agg.items(), key=lambda kv: -(kv[1][1])):
-        ri, ro, rr, rw5, rw1 = RATES[tier(model)]
-        rw = rw5 if cw5 else rw1
-        cost = i * ri + o * ro + cr * rr + cw * rw
+    for model, (i, o, cw, cr, cost) in sorted(agg.items(), key=lambda kv: -(kv[1][1])):
         tot_cost += cost
         for k, val in enumerate((i, o, cw, cr)):
             tot[k] += val
